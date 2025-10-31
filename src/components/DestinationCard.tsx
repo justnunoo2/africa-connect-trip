@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MapPin, Star } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface DestinationCardProps {
   name: string;
@@ -12,8 +13,14 @@ interface DestinationCardProps {
 }
 
 const DestinationCard = ({ name, country, description, image, rating, reviews }: DestinationCardProps) => {
+  const navigate = useNavigate();
+  const destinationSlug = name.toLowerCase().replace(/\s+/g, "-");
+
   return (
-    <Card className="overflow-hidden group cursor-pointer shadow-card hover:shadow-elevated transition-all duration-300 border-0 animate-fade-in">
+    <Card 
+      className="overflow-hidden group cursor-pointer shadow-card hover:shadow-elevated transition-all duration-300 border-0 animate-fade-in"
+      onClick={() => navigate(`/destinations/${destinationSlug}`)}
+    >
       <div className="relative h-64 overflow-hidden">
         <img
           src={image}
