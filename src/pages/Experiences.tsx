@@ -1,46 +1,65 @@
+import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Clock, Users, Star } from "lucide-react";
-import marketImage from "@/assets/experience-market.jpg";
+import { supabase } from "@/integrations/supabase/client";
+import BookExperienceDialog from "@/components/BookExperienceDialog";
+
+interface Experience {
+  id: string;
+  name: string;
+  host_name: string;
+  location: string;
+  duration: string;
+  max_group_size: number;
+  rating: number;
+  review_count: number;
+  price: number;
+  image_url: string;
+  description: string;
+}
 
 const Experiences = () => {
-  const experiences = [
-    {
-      name: "Traditional Cooking Class",
-      host: "Chef Amara",
-      location: "Marrakech, Morocco",
-      duration: "3 hours",
-      groupSize: "8 people max",
-      rating: 5.0,
-      reviews: 89,
-      price: 65,
-      image: marketImage,
-    },
-    {
-      name: "Safari Photography Tour",
-      host: "David K.",
-      location: "Maasai Mara, Kenya",
-      duration: "Full day",
-      groupSize: "6 people max",
-      rating: 4.9,
-      reviews: 124,
-      price: 250,
-      image: marketImage,
-    },
-    {
-      name: "Cultural Village Walk",
-      host: "Grace M.",
-      location: "Zanzibar, Tanzania",
-      duration: "2 hours",
-      groupSize: "10 people max",
-      rating: 4.8,
-      reviews: 67,
-      price: 45,
-      image: marketImage,
-    },
-  ];
+  const [experiences, setExperiences] = useState<Experience[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedExperience, setSelectedExperience] = useState<Experience | null>(null);
+  const [bookingDialogOpen, setBookingDialogOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchExperiences = async () => {
+      const { data, error } = await supabase
+        .from("experiences")
+        .select("*")
+        .order("rating", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching experiences:", error);
+      } else {
+        setExperiences(data || []);
+      }
+      setLoading(false);
+    };
+
+    fetchExperiences();
+  }, []);
+
+  const handleBookExperience = (experience: Experience) => {
+    setSelectedExperience(experience);
+    setBookingDialogOpen(true);
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <p className="text-xl">Loading experiences...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -61,10 +80,10 @@ const Experiences = () => {
           {/* Experiences Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {experiences.map((experience, index) => (
-              <Card key={index} className="overflow-hidden group shadow-card hover:shadow-elevated transition-all animate-fade-in border-0" style={{ animationDelay: `${index * 100}ms` }}>
+              <Card key={experience.id} className="overflow-hidden group shadow-card hover:shadow-elevated transition-all animate-fade-in border-0" style={{ animationDelay: `${index * 100}ms` }}>
                 <div className="relative h-56 overflow-hidden">
                   <img
-                    src={experience.image}
+                    src={experience.image_url}
                     alt={experience.name}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
@@ -81,7 +100,7 @@ const Experiences = () => {
                   </h3>
                   
                   <p className="text-sm text-muted-foreground mb-3">
-                    Hosted by <span className="font-medium text-foreground">{experience.host}</span>
+                    Hosted by <span className="font-medium text-foreground">{experience.host_name}</span>
                   </p>
                   
                   <p className="text-sm text-muted-foreground mb-4">{experience.location}</p>
@@ -93,7 +112,7 @@ const Experiences = () => {
                     </div>
                     <div className="flex items-center gap-1">
                       <Users className="h-4 w-4 text-muted-foreground" />
-                      <span>{experience.groupSize}</span>
+                      <span>{experience.max_group_size} people max</span>
                     </div>
                   </div>
 
@@ -102,7 +121,7 @@ const Experiences = () => {
                       <span className="text-2xl font-bold">${experience.price}</span>
                       <span className="text-muted-foreground text-sm">/person</span>
                     </div>
-                    <Button>Book Experience</Button>
+                    <Button onClick={() => handleBookExperience(experience)}>Book Experience</Button>
                   </div>
                 </div>
               </Card>
@@ -110,6 +129,14 @@ const Experiences = () => {
           </div>
         </div>
       </main>
+
+      {selectedExperience && (
+        <BookExperienceDialog
+          open={bookingDialogOpen}
+          onOpenChange={setBookingDialogOpen}
+          experience={selectedExperience}
+        />
+      )}
 
       <Footer />
     </div>

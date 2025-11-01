@@ -9,6 +9,7 @@ import DestinationDetail from "./pages/DestinationDetail";
 import Accommodations from "./pages/Accommodations";
 import Experiences from "./pages/Experiences";
 import GroupTrips from "./pages/GroupTrips";
+import GroupTripDetail from "./pages/GroupTripDetail";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/accommodations" element={<Accommodations />} />
           <Route path="/experiences" element={<Experiences />} />
           <Route path="/group-trips" element={<GroupTrips />} />
+          <Route path="/group-trips/:id" element={<GroupTripDetail />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
