@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -7,10 +8,14 @@ import { MapPin, Star, ArrowLeft, Calendar, Users, Clock } from "lucide-react";
 import serengetiImage from "@/assets/destination-serengeti.jpg";
 import capetownImage from "@/assets/destination-capetown.jpg";
 import egyptImage from "@/assets/destination-egypt.jpg";
+import PlanTripDialog from "@/components/PlanTripDialog";
+import { supabase } from "@/integrations/supabase/client";
 
 const DestinationDetail = () => {
   const { name } = useParams<{ name: string }>();
   const navigate = useNavigate();
+  const [planTripDialogOpen, setPlanTripDialogOpen] = useState(false);
+  const [destinationId, setDestinationId] = useState<string | null>(null);
 
   const destinations = [
     {
@@ -57,6 +62,24 @@ const DestinationDetail = () => {
   const destination = destinations.find(
     (d) => d.name.toLowerCase().replace(/\s+/g, "-") === name?.toLowerCase()
   );
+
+  useEffect(() => {
+    const fetchDestinationId = async () => {
+      if (destination) {
+        const { data } = await supabase
+          .from("destinations")
+          .select("id")
+          .eq("name", destination.name)
+          .single();
+        
+        if (data) {
+          setDestinationId(data.id);
+        }
+      }
+    };
+
+    fetchDestinationId();
+  }, [destination]);
 
   if (!destination) {
     return (
@@ -190,10 +213,18 @@ const DestinationDetail = () => {
                   </div>
                 </div>
 
-                <Button className="w-full mt-6" size="lg">
+                <Button 
+                  className="w-full mt-6" 
+                  size="lg"
+                  onClick={() => setPlanTripDialogOpen(true)}
+                >
                   Plan Your Trip
                 </Button>
-                <Button variant="outline" className="w-full mt-2">
+                <Button 
+                  variant="outline" 
+                  className="w-full mt-2"
+                  onClick={() => navigate(`/accommodations${destinationId ? `?destination=${destinationId}` : ''}`)}
+                >
                   View Accommodations
                 </Button>
               </Card>
@@ -201,6 +232,12 @@ const DestinationDetail = () => {
           </div>
         </div>
       </main>
+
+      <PlanTripDialog
+        open={planTripDialogOpen}
+        onOpenChange={setPlanTripDialogOpen}
+        destinationName={destination.name}
+      />
 
       <Footer />
     </div>

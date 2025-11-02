@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Card } from "@/components/ui/card";
@@ -22,6 +23,7 @@ interface Experience {
 }
 
 const Experiences = () => {
+  const navigate = useNavigate();
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedExperience, setSelectedExperience] = useState<Experience | null>(null);
@@ -45,7 +47,7 @@ const Experiences = () => {
     fetchExperiences();
   }, []);
 
-  const handleBookExperience = (experience: Experience) => {
+  const handleBookNow = (experience: Experience) => {
     setSelectedExperience(experience);
     setBookingDialogOpen(true);
   };
@@ -80,7 +82,12 @@ const Experiences = () => {
           {/* Experiences Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {experiences.map((experience, index) => (
-              <Card key={experience.id} className="overflow-hidden group shadow-card hover:shadow-elevated transition-all animate-fade-in border-0" style={{ animationDelay: `${index * 100}ms` }}>
+              <Card 
+                key={experience.id} 
+                className="overflow-hidden group shadow-card hover:shadow-elevated transition-all animate-fade-in border-0 cursor-pointer" 
+                style={{ animationDelay: `${index * 100}ms` }}
+                onClick={() => navigate(`/experiences/${experience.id}`)}
+              >
                 <div className="relative h-56 overflow-hidden">
                   <img
                     src={experience.image_url}
@@ -121,7 +128,12 @@ const Experiences = () => {
                       <span className="text-2xl font-bold">${experience.price}</span>
                       <span className="text-muted-foreground text-sm">/person</span>
                     </div>
-                    <Button onClick={() => handleBookExperience(experience)}>Book Experience</Button>
+                    <Button onClick={(e) => {
+                      e.stopPropagation();
+                      handleBookNow(experience);
+                    }}>
+                      Book Now
+                    </Button>
                   </div>
                 </div>
               </Card>
