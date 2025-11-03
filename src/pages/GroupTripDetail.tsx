@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Calendar, Users, DollarSign, MapPin, ArrowLeft } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Calendar, Users, DollarSign, MapPin, ArrowLeft, User, Mail, Phone } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 
@@ -23,6 +24,11 @@ interface Trip {
   highlights: string[];
   description: string;
   itinerary: any;
+  organizer_name: string;
+  organizer_bio: string | null;
+  organizer_image_url: string | null;
+  organizer_phone: string | null;
+  organizer_email: string | null;
 }
 
 const GroupTripDetail = () => {
@@ -186,6 +192,39 @@ const GroupTripDetail = () => {
                   </div>
                 </Card>
               )}
+
+              {/* Organizer Information */}
+              <Card className="p-6 border-0 shadow-card">
+                <h2 className="text-2xl font-bold mb-4">Meet Your Organizer</h2>
+                <div className="flex items-start gap-4">
+                  <Avatar className="h-16 w-16">
+                    <AvatarImage src={trip.organizer_image_url || undefined} />
+                    <AvatarFallback className="bg-gradient-hero text-primary-foreground text-lg">
+                      {trip.organizer_name.split(' ').map(n => n[0]).join('')}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-semibold mb-2">{trip.organizer_name}</h3>
+                    {trip.organizer_bio && (
+                      <p className="text-muted-foreground mb-3">{trip.organizer_bio}</p>
+                    )}
+                    <div className="space-y-2">
+                      {trip.organizer_email && (
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Mail className="h-4 w-4" />
+                          <span>{trip.organizer_email}</span>
+                        </div>
+                      )}
+                      {trip.organizer_phone && (
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Phone className="h-4 w-4" />
+                          <span>{trip.organizer_phone}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </Card>
             </div>
 
             {/* Sidebar */}

@@ -204,6 +204,11 @@ export type Database = {
           highlights: string[]
           id: string
           itinerary: Json | null
+          organizer_bio: string | null
+          organizer_email: string | null
+          organizer_image_url: string | null
+          organizer_name: string
+          organizer_phone: string | null
           spots_available: number
           total_spots: number
         }
@@ -218,6 +223,11 @@ export type Database = {
           highlights: string[]
           id?: string
           itinerary?: Json | null
+          organizer_bio?: string | null
+          organizer_email?: string | null
+          organizer_image_url?: string | null
+          organizer_name?: string
+          organizer_phone?: string | null
           spots_available: number
           total_spots: number
         }
@@ -232,6 +242,11 @@ export type Database = {
           highlights?: string[]
           id?: string
           itinerary?: Json | null
+          organizer_bio?: string | null
+          organizer_email?: string | null
+          organizer_image_url?: string | null
+          organizer_name?: string
+          organizer_phone?: string | null
           spots_available?: number
           total_spots?: number
         }

@@ -2,9 +2,11 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Compass } from "lucide-react";
+import OnboardingModal from "./OnboardingModal";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [onboardingOpen, setOnboardingOpen] = useState(false);
 
   const navLinks = [
     { name: "Destinations", path: "/destinations" },
@@ -42,9 +44,15 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* CTA Button */}
-          <div className="hidden md:block">
-            <Button variant="hero" size="lg">
+          {/* Auth & CTA Buttons */}
+          <div className="hidden md:flex items-center gap-3">
+            <Link to="/auth">
+              <Button variant="ghost">Login</Button>
+            </Link>
+            <Link to="/auth">
+              <Button variant="outline">Sign Up</Button>
+            </Link>
+            <Button variant="hero" size="lg" onClick={() => setOnboardingOpen(true)}>
               Get Started
             </Button>
           </div>
@@ -72,13 +80,23 @@ const Navbar = () => {
                   {link.name}
                 </Link>
               ))}
-              <Button variant="hero" size="lg" className="w-full">
-                Get Started
-              </Button>
+              <div className="flex flex-col gap-2 pt-2">
+                <Link to="/auth" onClick={() => setIsOpen(false)}>
+                  <Button variant="ghost" className="w-full">Login</Button>
+                </Link>
+                <Link to="/auth" onClick={() => setIsOpen(false)}>
+                  <Button variant="outline" className="w-full">Sign Up</Button>
+                </Link>
+                <Button variant="hero" size="lg" className="w-full" onClick={() => { setIsOpen(false); setOnboardingOpen(true); }}>
+                  Get Started
+                </Button>
+              </div>
             </div>
           </div>
         )}
       </div>
+
+      <OnboardingModal open={onboardingOpen} onOpenChange={setOnboardingOpen} />
     </nav>
   );
 };
