@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import DestinationsMap from "@/components/DestinationsMap";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MapPin, Star } from "lucide-react";
@@ -19,6 +20,8 @@ interface Accommodation {
   image_url: string;
   distance_from_center: number;
   destination_id: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 const Accommodations = () => {
@@ -85,6 +88,20 @@ const Accommodations = () => {
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               From eco-lodges to boutique hotels, discover accommodations that match your travel style.
             </p>
+          </div>
+
+          {/* Interactive Map */}
+          <div className="mb-12 animate-fade-in">
+            <h2 className="text-2xl font-bold mb-4">Accommodations on Map</h2>
+            <DestinationsMap 
+              markers={accommodations.map(acc => ({
+                id: acc.id,
+                name: acc.name,
+                latitude: acc.latitude || 0,
+                longitude: acc.longitude || 0,
+                description: acc.type
+              }))}
+            />
           </div>
 
           {/* Accommodations Grid */}

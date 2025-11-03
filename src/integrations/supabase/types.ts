@@ -23,6 +23,8 @@ export type Database = {
           distance_from_center: number | null
           id: string
           image_url: string
+          latitude: number | null
+          longitude: number | null
           name: string
           price_per_night: number
           rating: number | null
@@ -37,6 +39,8 @@ export type Database = {
           distance_from_center?: number | null
           id?: string
           image_url: string
+          latitude?: number | null
+          longitude?: number | null
           name: string
           price_per_night: number
           rating?: number | null
@@ -51,6 +55,8 @@ export type Database = {
           distance_from_center?: number | null
           id?: string
           image_url?: string
+          latitude?: number | null
+          longitude?: number | null
           name?: string
           price_per_night?: number
           rating?: number | null
@@ -74,7 +80,9 @@ export type Database = {
           description: string
           id: string
           image_url: string
+          latitude: number | null
           long_description: string | null
+          longitude: number | null
           name: string
           rating: number | null
           review_count: number | null
@@ -85,7 +93,9 @@ export type Database = {
           description: string
           id?: string
           image_url: string
+          latitude?: number | null
           long_description?: string | null
+          longitude?: number | null
           name: string
           rating?: number | null
           review_count?: number | null
@@ -96,7 +106,9 @@ export type Database = {
           description?: string
           id?: string
           image_url?: string
+          latitude?: number | null
           long_description?: string | null
+          longitude?: number | null
           name?: string
           rating?: number | null
           review_count?: number | null
