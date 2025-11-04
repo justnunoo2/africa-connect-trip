@@ -26,6 +26,7 @@ export type Database = {
           latitude: number | null
           longitude: number | null
           name: string
+          owner_id: string | null
           price_per_night: number
           rating: number | null
           review_count: number | null
@@ -42,6 +43,7 @@ export type Database = {
           latitude?: number | null
           longitude?: number | null
           name: string
+          owner_id?: string | null
           price_per_night: number
           rating?: number | null
           review_count?: number | null
@@ -58,6 +60,7 @@ export type Database = {
           latitude?: number | null
           longitude?: number | null
           name?: string
+          owner_id?: string | null
           price_per_night?: number
           rating?: number | null
           review_count?: number | null
@@ -170,6 +173,7 @@ export type Database = {
           location: string
           max_group_size: number
           name: string
+          owner_id: string | null
           price: number
           rating: number | null
           review_count: number | null
@@ -184,6 +188,7 @@ export type Database = {
           location: string
           max_group_size: number
           name: string
+          owner_id?: string | null
           price: number
           rating?: number | null
           review_count?: number | null
@@ -198,6 +203,7 @@ export type Database = {
           location?: string
           max_group_size?: number
           name?: string
+          owner_id?: string | null
           price?: number
           rating?: number | null
           review_count?: number | null
@@ -264,6 +270,132 @@ export type Database = {
         }
         Relationships: []
       }
+      guide_profiles: {
+        Row: {
+          certifications: string[] | null
+          created_at: string | null
+          id: string
+          languages: string[] | null
+          regions_covered: string[] | null
+          updated_at: string | null
+          user_id: string
+          years_experience: number | null
+        }
+        Insert: {
+          certifications?: string[] | null
+          created_at?: string | null
+          id?: string
+          languages?: string[] | null
+          regions_covered?: string[] | null
+          updated_at?: string | null
+          user_id: string
+          years_experience?: number | null
+        }
+        Update: {
+          certifications?: string[] | null
+          created_at?: string | null
+          id?: string
+          languages?: string[] | null
+          regions_covered?: string[] | null
+          updated_at?: string | null
+          user_id?: string
+          years_experience?: number | null
+        }
+        Relationships: []
+      }
+      host_profiles: {
+        Row: {
+          created_at: string | null
+          id: string
+          property_count: number | null
+          total_revenue: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          property_count?: number | null
+          total_revenue?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          property_count?: number | null
+          total_revenue?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string | null
+          full_name: string | null
+          id: string
+          phone: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          full_name?: string | null
+          id: string
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      transport_profiles: {
+        Row: {
+          capacity: number | null
+          created_at: string | null
+          id: string
+          license_plate: string | null
+          routes: string[] | null
+          updated_at: string | null
+          user_id: string
+          vehicle_model: string | null
+          vehicle_type: string | null
+        }
+        Insert: {
+          capacity?: number | null
+          created_at?: string | null
+          id?: string
+          license_plate?: string | null
+          routes?: string[] | null
+          updated_at?: string | null
+          user_id: string
+          vehicle_model?: string | null
+          vehicle_type?: string | null
+        }
+        Update: {
+          capacity?: number | null
+          created_at?: string | null
+          id?: string
+          license_plate?: string | null
+          routes?: string[] | null
+          updated_at?: string | null
+          user_id?: string
+          vehicle_model?: string | null
+          vehicle_type?: string | null
+        }
+        Relationships: []
+      }
       trip_members: {
         Row: {
           id: string
@@ -296,15 +428,42 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "tourist" | "guide" | "host" | "transport" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -431,6 +590,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["tourist", "guide", "host", "transport", "admin"],
+    },
   },
 } as const
