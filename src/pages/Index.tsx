@@ -1,7 +1,9 @@
+import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
 import DestinationCard from "@/components/DestinationCard";
+import OnboardingModal from "@/components/OnboardingModal";
 import { Card } from "@/components/ui/card";
 import { Star, TrendingUp, Shield, Heart } from "lucide-react";
 import serengetiImage from "@/assets/destination-serengeti.jpg";
@@ -9,6 +11,22 @@ import capetownImage from "@/assets/destination-capetown.jpg";
 import egyptImage from "@/assets/destination-egypt.jpg";
 
 const Index = () => {
+  const [onboardingOpen, setOnboardingOpen] = useState(false);
+
+  useEffect(() => {
+    // Check if user has seen the onboarding before
+    const hasSeenOnboarding = localStorage.getItem("hasSeenOnboarding");
+    if (!hasSeenOnboarding) {
+      setOnboardingOpen(true);
+    }
+  }, []);
+
+  const handleOnboardingClose = (open: boolean) => {
+    setOnboardingOpen(open);
+    if (!open) {
+      localStorage.setItem("hasSeenOnboarding", "true");
+    }
+  };
   const featuredDestinations = [
     {
       name: "Serengeti National Park",
@@ -149,6 +167,8 @@ const Index = () => {
       </section>
 
       <Footer />
+
+      <OnboardingModal open={onboardingOpen} onOpenChange={handleOnboardingClose} />
     </div>
   );
 };

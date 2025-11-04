@@ -2,11 +2,9 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Compass } from "lucide-react";
-import OnboardingModal from "./OnboardingModal";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [onboardingOpen, setOnboardingOpen] = useState(false);
 
   const navLinks = [
     { name: "Destinations", path: "/destinations" },
@@ -44,7 +42,7 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* Auth & CTA Buttons */}
+          {/* Auth Buttons */}
           <div className="hidden md:flex items-center gap-3">
             <Link to="/auth">
               <Button variant="ghost">Login</Button>
@@ -52,9 +50,6 @@ const Navbar = () => {
             <Link to="/auth">
               <Button variant="outline">Sign Up</Button>
             </Link>
-            <Button variant="hero" size="lg" onClick={() => setOnboardingOpen(true)}>
-              Get Started
-            </Button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -87,16 +82,11 @@ const Navbar = () => {
                 <Link to="/auth" onClick={() => setIsOpen(false)}>
                   <Button variant="outline" className="w-full">Sign Up</Button>
                 </Link>
-                <Button variant="hero" size="lg" className="w-full" onClick={() => { setIsOpen(false); setOnboardingOpen(true); }}>
-                  Get Started
-                </Button>
               </div>
             </div>
           </div>
         )}
       </div>
-
-      <OnboardingModal open={onboardingOpen} onOpenChange={setOnboardingOpen} />
     </nav>
   );
 };
