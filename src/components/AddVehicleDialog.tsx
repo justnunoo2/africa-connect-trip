@@ -1,85 +1,95 @@
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus } from "lucide-react";
 import { useTransportDashboard } from "@/contexts/TransportDashboardContext";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
-export const AddVehicleDialog = () => {
-  const [open, setOpen] = useState(false);
+interface AddVehicleDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export const AddVehicleDialog = ({ open, onOpenChange }: AddVehicleDialogProps) => {
   const { addVehicle } = useTransportDashboard();
-  const { toast } = useToast();
-  
   const [formData, setFormData] = useState({
     name: "",
     type: "",
-    capacity: 0,
-    status: "Available",
+    capacity: "",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    addVehicle(formData);
-    toast({
-      title: "Vehicle added",
-      description: "Your new vehicle has been added to the fleet.",
+    
+    addVehicle({
+      name: formData.name,
+      type: formData.type,
+      capacity: parseInt(formData.capacity),
+      rides: 0,
+      status: "Available",
     });
-    setOpen(false);
-    setFormData({ name: "", type: "", capacity: 0, status: "Available" });
+
+    toast.success("Vehicle added successfully!");
+    onOpenChange(false);
+    setFormData({
+      name: "",
+      type: "",
+      capacity: "",
+    });
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button size="sm">
-          <Plus className="mr-2 h-4 w-4" />
-          Add Vehicle
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Add New Vehicle</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="name">Vehicle Name</Label>
-            <Input
-              id="name"
-              placeholder="e.g., Toyota Land Cruiser"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              required
-            />
+        <form onSubmit={handleSubmit}>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="name">Vehicle Name</Label>
+              <Input
+                id="name"
+                placeholder="e.g., Toyota Land Cruiser"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                required
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="type">Vehicle Type</Label>
+              <Select value={formData.type} onValueChange={(value) => setFormData({ ...formData, type: value })}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="SUV">SUV</SelectItem>
+                  <SelectItem value="Van">Van</SelectItem>
+                  <SelectItem value="Pickup">Pickup</SelectItem>
+                  <SelectItem value="Bus">Bus</SelectItem>
+                  <SelectItem value="Sedan">Sedan</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="capacity">Passenger Capacity</Label>
+              <Input
+                id="capacity"
+                type="number"
+                value={formData.capacity}
+                onChange={(e) => setFormData({ ...formData, capacity: e.target.value })}
+                required
+              />
+            </div>
           </div>
-          <div>
-            <Label htmlFor="type">Vehicle Type</Label>
-            <Select value={formData.type} onValueChange={(value) => setFormData({ ...formData, type: value })}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="SUV">SUV</SelectItem>
-                <SelectItem value="Van">Van</SelectItem>
-                <SelectItem value="Pickup">Pickup</SelectItem>
-                <SelectItem value="Bus">Bus</SelectItem>
-                <SelectItem value="Sedan">Sedan</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Label htmlFor="capacity">Passenger Capacity</Label>
-            <Input
-              id="capacity"
-              type="number"
-              value={formData.capacity}
-              onChange={(e) => setFormData({ ...formData, capacity: Number(e.target.value) })}
-              required
-            />
-          </div>
-          <Button type="submit" className="w-full">Add Vehicle</Button>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              Cancel
+            </Button>
+            <Button type="submit">Add Vehicle</Button>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>

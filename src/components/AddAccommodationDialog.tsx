@@ -1,84 +1,76 @@
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus } from "lucide-react";
 import { useHostDashboard } from "@/contexts/HostDashboardContext";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
-export const AddAccommodationDialog = () => {
-  const [open, setOpen] = useState(false);
+interface AddAccommodationDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export const AddAccommodationDialog = ({ open, onOpenChange }: AddAccommodationDialogProps) => {
   const { addAccommodation } = useHostDashboard();
-  const { toast } = useToast();
-  
   const [formData, setFormData] = useState({
     name: "",
-    type: "",
-    price: 0,
-    status: "Active",
+    price: "",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    addAccommodation(formData);
-    toast({
-      title: "Property added",
-      description: "Your new property has been listed successfully.",
+    
+    addAccommodation({
+      name: formData.name,
+      price: `$${formData.price}/night`,
+      bookings: 0,
+      occupancy: "0%",
+      status: "Active",
     });
-    setOpen(false);
-    setFormData({ name: "", type: "", price: 0, status: "Active" });
+
+    toast.success("Accommodation added successfully!");
+    onOpenChange(false);
+    setFormData({
+      name: "",
+      price: "",
+    });
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button size="sm">
-          <Plus className="mr-2 h-4 w-4" />
-          Add Property
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Add New Property</DialogTitle>
+          <DialogTitle>Add New Accommodation</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="name">Property Name</Label>
-            <Input
-              id="name"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              required
-            />
+        <form onSubmit={handleSubmit}>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="name">Property Name</Label>
+              <Input
+                id="name"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                required
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="price">Price per Night ($)</Label>
+              <Input
+                id="price"
+                type="number"
+                value={formData.price}
+                onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                required
+              />
+            </div>
           </div>
-          <div>
-            <Label htmlFor="type">Property Type</Label>
-            <Select value={formData.type} onValueChange={(value) => setFormData({ ...formData, type: value })}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Lodge">Lodge</SelectItem>
-                <SelectItem value="Villa">Villa</SelectItem>
-                <SelectItem value="Hotel">Hotel</SelectItem>
-                <SelectItem value="Guesthouse">Guesthouse</SelectItem>
-                <SelectItem value="Apartment">Apartment</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Label htmlFor="price">Price per Night ($)</Label>
-            <Input
-              id="price"
-              type="number"
-              value={formData.price}
-              onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
-              required
-            />
-          </div>
-          <Button type="submit" className="w-full">Add Property</Button>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              Cancel
+            </Button>
+            <Button type="submit">Add Property</Button>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
