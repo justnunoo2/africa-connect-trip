@@ -1,16 +1,17 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 
 interface Accommodation {
-  id: number;
+  id: string;
   name: string;
+  type: string;
+  price: number;
   bookings: number;
   occupancy: string;
-  price: string;
   status: string;
 }
 
 interface Booking {
-  id: number;
+  id: string;
   property: string;
   guest: string;
   checkIn: string;
@@ -21,9 +22,8 @@ interface Booking {
 interface HostDashboardContextType {
   accommodations: Accommodation[];
   bookings: Booking[];
-  addAccommodation: (accommodation: Omit<Accommodation, "id">) => void;
-  updateAccommodation: (id: number, accommodation: Partial<Accommodation>) => void;
-  deleteAccommodation: (id: number) => void;
+  addAccommodation: (accommodation: Omit<Accommodation, "id" | "bookings" | "occupancy">) => void;
+  deleteAccommodation: (id: string) => void;
 }
 
 const HostDashboardContext = createContext<HostDashboardContextType | undefined>(undefined);
@@ -39,34 +39,28 @@ export const useHostDashboard = () => {
 export const HostDashboardProvider = ({ children }: { children: ReactNode }) => {
   const [accommodations, setAccommodations] = useState<Accommodation[]>([
     {
-      id: 1,
+      id: "1",
       name: "Luxury Safari Lodge",
+      type: "Lodge",
+      price: 320,
       bookings: 24,
       occupancy: "85%",
-      price: "$320/night",
       status: "Active",
     },
     {
-      id: 2,
+      id: "2",
       name: "Beachfront Villa",
+      type: "Villa",
+      price: 280,
       bookings: 18,
       occupancy: "72%",
-      price: "$280/night",
-      status: "Active",
-    },
-    {
-      id: 3,
-      name: "Mountain Retreat",
-      bookings: 15,
-      occupancy: "68%",
-      price: "$210/night",
       status: "Active",
     },
   ]);
 
-  const [bookings] = useState<Booking[]>([
+  const [bookings, setBookings] = useState<Booking[]>([
     {
-      id: 1,
+      id: "1",
       property: "Luxury Safari Lodge",
       guest: "John Doe",
       checkIn: "2024-11-20",
@@ -74,7 +68,7 @@ export const HostDashboardProvider = ({ children }: { children: ReactNode }) => 
       revenue: "$1,600",
     },
     {
-      id: 2,
+      id: "2",
       property: "Beachfront Villa",
       guest: "Jane Smith",
       checkIn: "2024-11-22",
@@ -83,34 +77,27 @@ export const HostDashboardProvider = ({ children }: { children: ReactNode }) => 
     },
   ]);
 
-  const addAccommodation = (accommodation: Omit<Accommodation, "id">) => {
-    const newAccommodation = {
+  const addAccommodation = (accommodation: Omit<Accommodation, "id" | "bookings" | "occupancy">) => {
+    const newAccommodation: Accommodation = {
       ...accommodation,
-      id: Math.max(...accommodations.map(a => a.id), 0) + 1,
+      id: Date.now().toString(),
+      bookings: 0,
+      occupancy: "0%",
     };
     setAccommodations([...accommodations, newAccommodation]);
   };
 
-  const updateAccommodation = (id: number, updatedData: Partial<Accommodation>) => {
-    setAccommodations(accommodations.map(acc => 
-      acc.id === id ? { ...acc, ...updatedData } : acc
-    ));
-  };
-
-  const deleteAccommodation = (id: number) => {
+  const deleteAccommodation = (id: string) => {
     setAccommodations(accommodations.filter(acc => acc.id !== id));
   };
 
   return (
-    <HostDashboardContext.Provider
-      value={{
-        accommodations,
-        bookings,
-        addAccommodation,
-        updateAccommodation,
-        deleteAccommodation,
-      }}
-    >
+    <HostDashboardContext.Provider value={{
+      accommodations,
+      bookings,
+      addAccommodation,
+      deleteAccommodation,
+    }}>
       {children}
     </HostDashboardContext.Provider>
   );

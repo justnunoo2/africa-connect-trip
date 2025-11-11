@@ -1,32 +1,31 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 
 interface Experience {
-  id: number;
+  id: string;
   name: string;
+  location: string;
+  duration: string;
+  price: number;
   bookings: number;
   rating: number;
-  price: string;
-  status: string;
-  description?: string;
-  location?: string;
-  duration?: string;
-  maxGroupSize?: number;
 }
 
 interface Booking {
-  id: number;
+  id: string;
   experience: string;
+  client: string;
   date: string;
-  guests: number;
+  people: number;
   revenue: string;
+  status: string;
 }
 
 interface GuideDashboardContextType {
   experiences: Experience[];
   bookings: Booking[];
-  addExperience: (experience: Omit<Experience, "id">) => void;
-  updateExperience: (id: number, experience: Partial<Experience>) => void;
-  deleteExperience: (id: number) => void;
+  addExperience: (experience: Omit<Experience, "id" | "bookings" | "rating">) => void;
+  deleteExperience: (id: string) => void;
+  updateBookingStatus: (id: string, status: string) => void;
 }
 
 const GuideDashboardContext = createContext<GuideDashboardContextType | undefined>(undefined);
@@ -42,76 +41,74 @@ export const useGuideDashboard = () => {
 export const GuideDashboardProvider = ({ children }: { children: ReactNode }) => {
   const [experiences, setExperiences] = useState<Experience[]>([
     {
-      id: 1,
-      name: "Safari Adventure in Serengeti",
-      bookings: 15,
-      rating: 4.9,
-      price: "$250",
-      status: "Active",
-    },
-    {
-      id: 2,
-      name: "Mountain Hiking Experience",
-      bookings: 8,
-      rating: 4.7,
-      price: "$180",
-      status: "Active",
-    },
-    {
-      id: 3,
-      name: "Cultural Village Tour",
-      bookings: 12,
+      id: "1",
+      name: "Serengeti Safari Tour",
+      location: "Serengeti, Tanzania",
+      duration: "3 days",
+      price: 450,
+      bookings: 28,
       rating: 4.8,
-      price: "$120",
-      status: "Active",
+    },
+    {
+      id: "2",
+      name: "Table Mountain Hike",
+      location: "Cape Town, South Africa",
+      duration: "Half day",
+      price: 85,
+      bookings: 45,
+      rating: 4.9,
     },
   ]);
 
-  const [bookings] = useState<Booking[]>([
+  const [bookings, setBookings] = useState<Booking[]>([
     {
-      id: 1,
-      experience: "Safari Adventure",
-      date: "2024-11-15",
-      guests: 4,
-      revenue: "$1,000",
+      id: "1",
+      experience: "Serengeti Safari Tour",
+      client: "John Smith",
+      date: "2024-11-20",
+      people: 4,
+      revenue: "$1,800",
+      status: "Confirmed",
     },
     {
-      id: 2,
-      experience: "Mountain Hiking",
+      id: "2",
+      experience: "Table Mountain Hike",
+      client: "Emma Wilson",
       date: "2024-11-18",
-      guests: 2,
-      revenue: "$360",
+      people: 2,
+      revenue: "$170",
+      status: "Pending",
     },
   ]);
 
-  const addExperience = (experience: Omit<Experience, "id">) => {
-    const newExperience = {
+  const addExperience = (experience: Omit<Experience, "id" | "bookings" | "rating">) => {
+    const newExperience: Experience = {
       ...experience,
-      id: Math.max(...experiences.map(e => e.id), 0) + 1,
+      id: Date.now().toString(),
+      bookings: 0,
+      rating: 0,
     };
     setExperiences([...experiences, newExperience]);
   };
 
-  const updateExperience = (id: number, updatedData: Partial<Experience>) => {
-    setExperiences(experiences.map(exp => 
-      exp.id === id ? { ...exp, ...updatedData } : exp
-    ));
-  };
-
-  const deleteExperience = (id: number) => {
+  const deleteExperience = (id: string) => {
     setExperiences(experiences.filter(exp => exp.id !== id));
   };
 
+  const updateBookingStatus = (id: string, status: string) => {
+    setBookings(bookings.map(booking => 
+      booking.id === id ? { ...booking, status } : booking
+    ));
+  };
+
   return (
-    <GuideDashboardContext.Provider
-      value={{
-        experiences,
-        bookings,
-        addExperience,
-        updateExperience,
-        deleteExperience,
-      }}
-    >
+    <GuideDashboardContext.Provider value={{
+      experiences,
+      bookings,
+      addExperience,
+      deleteExperience,
+      updateBookingStatus,
+    }}>
       {children}
     </GuideDashboardContext.Provider>
   );

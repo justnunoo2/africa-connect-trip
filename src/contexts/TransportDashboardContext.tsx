@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 
 interface Vehicle {
-  id: number;
+  id: string;
   name: string;
   type: string;
   capacity: number;
@@ -10,7 +10,7 @@ interface Vehicle {
 }
 
 interface Ride {
-  id: number;
+  id: string;
   route: string;
   vehicle: string;
   date: string;
@@ -21,9 +21,8 @@ interface Ride {
 interface TransportDashboardContextType {
   vehicles: Vehicle[];
   rides: Ride[];
-  addVehicle: (vehicle: Omit<Vehicle, "id">) => void;
-  updateVehicle: (id: number, vehicle: Partial<Vehicle>) => void;
-  deleteVehicle: (id: number) => void;
+  addVehicle: (vehicle: Omit<Vehicle, "id" | "rides">) => void;
+  deleteVehicle: (id: string) => void;
 }
 
 const TransportDashboardContext = createContext<TransportDashboardContextType | undefined>(undefined);
@@ -39,7 +38,7 @@ export const useTransportDashboard = () => {
 export const TransportDashboardProvider = ({ children }: { children: ReactNode }) => {
   const [vehicles, setVehicles] = useState<Vehicle[]>([
     {
-      id: 1,
+      id: "1",
       name: "Toyota Land Cruiser",
       type: "SUV",
       capacity: 7,
@@ -47,7 +46,7 @@ export const TransportDashboardProvider = ({ children }: { children: ReactNode }
       status: "Available",
     },
     {
-      id: 2,
+      id: "2",
       name: "Mercedes Sprinter Van",
       type: "Van",
       capacity: 12,
@@ -55,7 +54,7 @@ export const TransportDashboardProvider = ({ children }: { children: ReactNode }
       status: "Available",
     },
     {
-      id: 3,
+      id: "3",
       name: "Toyota Hilux",
       type: "Pickup",
       capacity: 5,
@@ -64,9 +63,9 @@ export const TransportDashboardProvider = ({ children }: { children: ReactNode }
     },
   ]);
 
-  const [rides] = useState<Ride[]>([
+  const [rides, setRides] = useState<Ride[]>([
     {
-      id: 1,
+      id: "1",
       route: "Nairobi → Mombasa",
       vehicle: "Land Cruiser",
       date: "2024-11-16",
@@ -74,7 +73,7 @@ export const TransportDashboardProvider = ({ children }: { children: ReactNode }
       revenue: "$450",
     },
     {
-      id: 2,
+      id: "2",
       route: "Cape Town → Garden Route",
       vehicle: "Sprinter Van",
       date: "2024-11-17",
@@ -83,34 +82,26 @@ export const TransportDashboardProvider = ({ children }: { children: ReactNode }
     },
   ]);
 
-  const addVehicle = (vehicle: Omit<Vehicle, "id">) => {
-    const newVehicle = {
+  const addVehicle = (vehicle: Omit<Vehicle, "id" | "rides">) => {
+    const newVehicle: Vehicle = {
       ...vehicle,
-      id: Math.max(...vehicles.map(v => v.id), 0) + 1,
+      id: Date.now().toString(),
+      rides: 0,
     };
     setVehicles([...vehicles, newVehicle]);
   };
 
-  const updateVehicle = (id: number, updatedData: Partial<Vehicle>) => {
-    setVehicles(vehicles.map(veh => 
-      veh.id === id ? { ...veh, ...updatedData } : veh
-    ));
-  };
-
-  const deleteVehicle = (id: number) => {
-    setVehicles(vehicles.filter(veh => veh.id !== id));
+  const deleteVehicle = (id: string) => {
+    setVehicles(vehicles.filter(v => v.id !== id));
   };
 
   return (
-    <TransportDashboardContext.Provider
-      value={{
-        vehicles,
-        rides,
-        addVehicle,
-        updateVehicle,
-        deleteVehicle,
-      }}
-    >
+    <TransportDashboardContext.Provider value={{
+      vehicles,
+      rides,
+      addVehicle,
+      deleteVehicle,
+    }}>
       {children}
     </TransportDashboardContext.Provider>
   );
