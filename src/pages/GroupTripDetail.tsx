@@ -11,6 +11,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Calendar, Users, DollarSign, MapPin, ArrowLeft, User, Mail, Phone } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import ImageGallery from "@/components/ImageGallery";
+import serengetiImage from "@/assets/destination-serengeti.jpg";
 
 interface Trip {
   id: string;
@@ -158,6 +160,17 @@ const GroupTripDetail = () => {
                   <span className="text-xl">{trip.countries}</span>
                 </div>
               </div>
+
+              {/* Image Gallery */}
+              <ImageGallery
+                mainImage={serengetiImage}
+                subImages={[
+                  serengetiImage,
+                  serengetiImage,
+                  serengetiImage,
+                ]}
+                alt={trip.destination}
+              />
 
               {trip.description && (
                 <Card className="p-6 border-0 shadow-card">

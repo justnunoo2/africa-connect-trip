@@ -10,6 +10,7 @@ import capetownImage from "@/assets/destination-capetown.jpg";
 import egyptImage from "@/assets/destination-egypt.jpg";
 import PlanTripDialog from "@/components/PlanTripDialog";
 import { supabase } from "@/integrations/supabase/client";
+import ImageGallery from "@/components/ImageGallery";
 
 const DestinationDetail = () => {
   const { name } = useParams<{ name: string }>();
@@ -116,26 +117,31 @@ const DestinationDetail = () => {
             Back to Destinations
           </Button>
 
-          {/* Hero Image */}
-          <div className="relative h-[60vh] rounded-xl overflow-hidden mb-8 animate-fade-in">
-            <img
-              src={destination.image}
-              alt={destination.name}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-overlay opacity-40" />
-            <div className="absolute bottom-8 left-8 text-white">
-              <div className="flex items-center gap-2 mb-2">
-                <MapPin className="h-5 w-5" />
-                <span className="text-lg">{destination.country}</span>
-              </div>
-              <h1 className="text-5xl font-bold">{destination.name}</h1>
+          {/* Hero Section with Title */}
+          <div className="mb-8 animate-fade-in">
+            <div className="flex items-center gap-2 mb-2">
+              <MapPin className="h-5 w-5 text-primary" />
+              <span className="text-lg text-muted-foreground">{destination.country}</span>
             </div>
-            <div className="absolute top-8 right-8 bg-card px-4 py-2 rounded-full flex items-center gap-2">
+            <h1 className="text-5xl font-bold mb-4">{destination.name}</h1>
+            <div className="flex items-center gap-2">
               <Star className="h-5 w-5 fill-accent text-accent" />
               <span className="text-lg font-semibold">{destination.rating}</span>
               <span className="text-muted-foreground">({destination.reviews} reviews)</span>
             </div>
+          </div>
+
+          {/* Image Gallery */}
+          <div className="mb-8 animate-fade-in">
+            <ImageGallery
+              mainImage={destination.image}
+              subImages={[
+                destination.image,
+                destination.image,
+                destination.image,
+              ]}
+              alt={destination.name}
+            />
           </div>
 
           <div className="grid lg:grid-cols-3 gap-8">

@@ -12,6 +12,7 @@ import Experiences from "./pages/Experiences";
 import ExperienceDetail from "./pages/ExperienceDetail";
 import GroupTrips from "./pages/GroupTrips";
 import GroupTripDetail from "./pages/GroupTripDetail";
+import Transport from "./pages/Transport";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
@@ -35,9 +36,10 @@ const App = () => (
           <Route path="/destinations/:name" element={<DestinationDetail />} />
           <Route path="/accommodations" element={<Accommodations />} />
           <Route path="/accommodations/:id" element={<AccommodationDetail />} />
-          <Route path="/experiences" element={<Experiences />} />
-          <Route path="/experiences/:id" element={<ExperienceDetail />} />
-          <Route path="/group-trips" element={<GroupTrips />} />
+            <Route path="/experiences" element={<Experiences />} />
+            <Route path="/experiences/:id" element={<ExperienceDetail />} />
+            <Route path="/transport" element={<Transport />} />
+            <Route path="/group-trips" element={<GroupTrips />} />
           <Route path="/group-trips/:id" element={<GroupTripDetail />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />

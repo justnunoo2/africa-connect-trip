@@ -8,6 +8,7 @@ import { ArrowLeft, MapPin, Star, Wifi, Coffee, Wind, DollarSign } from "lucide-
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import BookAccommodationDialog from "@/components/BookAccommodationDialog";
+import ImageGallery from "@/components/ImageGallery";
 
 interface Accommodation {
   id: string;
@@ -93,12 +94,16 @@ const AccommodationDetail = () => {
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-6">
-              {/* Hero Image */}
-              <div className="relative h-[400px] rounded-xl overflow-hidden">
-                <img
-                  src={accommodation.image_url}
+              {/* Image Gallery */}
+              <div className="relative">
+                <ImageGallery
+                  mainImage={accommodation.image_url}
+                  subImages={[
+                    accommodation.image_url,
+                    accommodation.image_url,
+                    accommodation.image_url,
+                  ]}
                   alt={accommodation.name}
-                  className="w-full h-full object-cover"
                 />
                 <div className="absolute top-4 right-4 bg-card px-3 py-1 rounded-full flex items-center gap-1">
                   <Star className="h-4 w-4 fill-accent text-accent" />

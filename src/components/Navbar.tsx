@@ -10,6 +10,7 @@ const Navbar = () => {
     { name: "Destinations", path: "/destinations" },
     { name: "Accommodations", path: "/accommodations" },
     { name: "Experiences", path: "/experiences" },
+    { name: "Transport", path: "/transport" },
     { name: "Group Trips", path: "/group-trips" },
     { name: "About", path: "/about" },
     { name: "Contact", path: "/contact" },

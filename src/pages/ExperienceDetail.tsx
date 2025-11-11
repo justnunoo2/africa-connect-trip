@@ -8,6 +8,7 @@ import { ArrowLeft, MapPin, Star, Clock, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import BookExperienceDialog from "@/components/BookExperienceDialog";
+import ImageGallery from "@/components/ImageGallery";
 
 interface Experience {
   id: string;
@@ -94,12 +95,16 @@ const ExperienceDetail = () => {
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-6">
-              {/* Hero Image */}
-              <div className="relative h-[400px] rounded-xl overflow-hidden">
-                <img
-                  src={experience.image_url}
+              {/* Image Gallery */}
+              <div className="relative">
+                <ImageGallery
+                  mainImage={experience.image_url}
+                  subImages={[
+                    experience.image_url,
+                    experience.image_url,
+                    experience.image_url,
+                  ]}
                   alt={experience.name}
-                  className="w-full h-full object-cover"
                 />
                 <div className="absolute top-4 right-4 bg-card px-3 py-1 rounded-full flex items-center gap-1">
                   <Star className="h-4 w-4 fill-accent text-accent" />
