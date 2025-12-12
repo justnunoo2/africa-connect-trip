@@ -22,6 +22,7 @@ import GuideDashboard from "./pages/GuideDashboard";
 import HostDashboard from "./pages/HostDashboard";
 import TransportDashboard from "./pages/TransportDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
+import Search from "./pages/Search";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/search" element={<Search />} />
           <Route path="/destinations" element={<Destinations />} />
           <Route path="/destinations/:name" element={<DestinationDetail />} />
           <Route path="/accommodations" element={<Accommodations />} />

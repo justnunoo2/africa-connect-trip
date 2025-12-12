@@ -1,9 +1,21 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import heroImage from "@/assets/hero-bg.jpg";
 
 const Hero = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
@@ -30,31 +42,33 @@ const Hero = () => {
         </p>
 
         {/* Search Bar */}
-        <div className="max-w-3xl mx-auto mb-8 animate-fade-in">
+        <form onSubmit={handleSearch} className="max-w-3xl mx-auto mb-8 animate-fade-in">
           <div className="flex flex-col md:flex-row gap-4 bg-card/95 backdrop-blur-md p-4 rounded-2xl shadow-elevated">
             <div className="flex-1 relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
                 type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search destinations, activities, or experiences..."
                 className="pl-12 h-14 border-0 bg-transparent text-foreground placeholder:text-muted-foreground"
               />
             </div>
-            <Button variant="hero" size="lg" className="h-14 px-8">
+            <Button type="submit" variant="hero" size="lg" className="h-14 px-8">
               Search
             </Button>
           </div>
-        </div>
+        </form>
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in">
-          <Button variant="hero" size="lg">
+          <Button variant="hero" size="lg" onClick={() => navigate("/destinations")}>
             Find a Destination
           </Button>
-          <Button variant="accent" size="lg">
+          <Button variant="accent" size="lg" onClick={() => navigate("/group-trips")}>
             Join a Group Trip
           </Button>
-          <Button variant="outline" size="lg" className="border-2 border-primary-foreground bg-primary-foreground/10 text-primary-foreground hover:bg-primary-foreground hover:text-foreground backdrop-blur-sm">
+          <Button variant="outline" size="lg" className="border-2 border-primary-foreground bg-primary-foreground/10 text-primary-foreground hover:bg-primary-foreground hover:text-foreground backdrop-blur-sm" onClick={() => navigate("/auth")}>
             Host an Experience
           </Button>
         </div>
